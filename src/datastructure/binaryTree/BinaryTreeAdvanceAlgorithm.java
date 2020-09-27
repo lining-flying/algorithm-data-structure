@@ -1,5 +1,7 @@
 package datastructure.binaryTree;
 
+import java.util.*;
+
 /**
  * 二叉树-高级算法
  * 1. 给定二叉树中的一个节点，找到对应的后继节点
@@ -229,6 +231,299 @@ public class BinaryTreeAdvanceAlgorithm {
             this.maxSubBSTSize = maxSubBSTSize;
             this.min = min;
             this.max = max;
+        }
+    }
+
+
+    /**
+     * 返回二叉树的最大搜索二叉子树的头节点
+     * @param head
+     * @return
+     */
+    public static BinaryTreeNode<Integer> maxSubBSTHead(BinaryTreeNode<Integer> head){
+        Info_MaxSubBSTHead info =  process_MaxSubBSTHead(head);
+        return info == null ? null : info.maxSubBSTHead ;
+    }
+
+    private static Info_MaxSubBSTHead process_MaxSubBSTHead(BinaryTreeNode<Integer> node){
+        if(node == null){
+            return null ;
+        }
+        Info_MaxSubBSTHead leftInfo = process_MaxSubBSTHead(node.getLeft());
+        Info_MaxSubBSTHead rightInfo = process_MaxSubBSTHead(node.getRight());
+        int min = node.getValue();
+        int max = node.getValue() ;
+        int maxSubBSTSize = 0 ;
+        BinaryTreeNode<Integer> maxSubBSTHead = null ;
+        if(leftInfo != null) {
+            min = Math.min(min, leftInfo.min);
+            max = Math.max(max, leftInfo.max);
+            if (maxSubBSTSize < leftInfo.maxSubBstSize) {
+                maxSubBSTSize = leftInfo.maxSubBstSize;
+                maxSubBSTHead = leftInfo.maxSubBSTHead;
+            }
+        }
+        if(rightInfo != null){
+            min = Math.min(min,rightInfo.min);
+            max = Math.max(max,rightInfo.max);
+            if (maxSubBSTSize < rightInfo.maxSubBstSize) {
+                maxSubBSTSize = rightInfo.maxSubBstSize;
+                maxSubBSTHead = rightInfo.maxSubBSTHead;
+            }
+        }
+
+        if((leftInfo == null || leftInfo.maxSubBSTHead == node.getLeft()) && (rightInfo == null || rightInfo.maxSubBSTHead == node.getRight())){
+            maxSubBSTHead = node;
+            maxSubBSTSize = 1 + (leftInfo == null ? 0 : leftInfo.maxSubBstSize) + (rightInfo == null ? 0 : rightInfo.maxSubBstSize) ;
+        }
+
+        return new Info_MaxSubBSTHead(maxSubBSTHead,maxSubBSTSize,min,max);
+    }
+
+    static class Info_MaxSubBSTHead{
+        BinaryTreeNode<Integer> maxSubBSTHead;
+        int maxSubBstSize ;
+        int min ;
+        int max ;
+
+        public Info_MaxSubBSTHead(BinaryTreeNode<Integer> maxSubBSTHead, int maxSubBstSize, int min, int max) {
+            this.maxSubBSTHead = maxSubBSTHead;
+            this.maxSubBstSize = maxSubBstSize;
+            this.min = min;
+            this.max = max;
+        }
+    }
+
+
+
+
+    /**
+     * 最大幸福值 —— 树形DP
+     * 对于每一个节点：只有两种情况 来或者不来
+     * 问题转化为求当前节点来或者不来时的最大值
+     * 当前节点来时的最大值为子节点不来时的最大值之和+当前节点的幸福值
+     * 当前节点不来时的最大值为各子节点的来和不来的最大值之和
+     * @param root
+     * @return
+     */
+    public static int maxHappyValue(Employee root){
+        Info_MaxHappy info = maxHappyValueProcess(root);
+        return Math.max(info.yes,info.no);
+    }
+
+    public static Info_MaxHappy maxHappyValueProcess(Employee node){
+        if(node.getNexts() == null || node.getNexts().isEmpty()){
+            return new Info_MaxHappy(node.getHappy(),0);
+        }
+
+        int yes = node.getHappy() ;
+        int no = 0 ;
+
+        for (Employee next : node.getNexts()) {
+            Info_MaxHappy info = maxHappyValueProcess(next);
+            yes += info.no ;
+            no += Math.max(info.yes,info.no);
+        }
+
+        return new Info_MaxHappy(yes,no);
+    }
+
+    static class Info_MaxHappy{
+        int yes ; //当前节点员工来时的最大值
+        int no ; //当前节点员工不来时的最大值
+
+        public Info_MaxHappy(int yes, int no) {
+            this.yes = yes;
+            this.no = no;
+        }
+    }
+
+
+    /**
+     * 判断二叉树是否完全二叉树
+     * 非递归实现
+     * @param head
+     * @param <T>
+     * @return
+     */
+    public static <T> boolean isCBT(BinaryTreeNode<T> head){
+        if(head == null){
+            return true ;
+        }
+        Queue<BinaryTreeNode<T>> queue = new LinkedList<>();
+        queue.add(head);
+        BinaryTreeNode<T> left = null ;
+        BinaryTreeNode<T> right = null ;
+        boolean flag = false ; //标识某个节点的左右孩子不满
+        while(!queue.isEmpty()){
+            BinaryTreeNode<T> node = queue.poll() ;
+            left = node.getLeft() ;
+            right = node.getRight() ;
+            if((flag && !(left == null && right == null)) || (node.getLeft() == null && node.getRight() != null)){
+                return false ;
+            }
+            if(left != null){
+                queue.add(left) ;
+            }
+            if(right != null){
+                queue.add(right);
+            }
+            if(left == null || right == null){
+                flag = true ;
+            }
+        }
+
+        return true ;
+    }
+
+    /**
+     * 是否是完全二叉树
+     * 递归实现
+     * @param root
+     * @param <T>
+     * @return
+     */
+    public static <T> boolean isCBTRecursive(BinaryTreeNode<T> root){
+        return process_CBT(root).isCBT ;
+    }
+
+    /**
+     * 1. 是否是满二叉树
+     * 2. 左树是完全二叉树，右树是满二叉树，且左树高度比右树多1
+     * 3. 左树是满二叉树，右树是满二叉树，且左树高度比右树高度多1
+     * 4. 左树是满二叉树，右树是完全二叉树，且左右树高度相等
+     *
+     */
+    private static <T> Info_CBT process_CBT(BinaryTreeNode<T> node){
+        if(node == null){
+            return new Info_CBT(true,true,0);
+        }
+
+        Info_CBT leftInfo = process_CBT(node.getLeft());
+        Info_CBT rightInfo = process_CBT(node.getRight());
+
+        int height = Math.max(leftInfo.height,rightInfo.height)+1 ;
+        boolean isFull = leftInfo.isFull && rightInfo.isFull && leftInfo.height == rightInfo.height ;
+
+        boolean isCBT = false ;
+        if(isFull){
+            isCBT = true ;
+        }else{
+            if(leftInfo.isFull ){
+                if(rightInfo.isFull && leftInfo.height == rightInfo.height+1){
+                    isCBT = true ;
+                }else if(rightInfo.isCBT && leftInfo.height == rightInfo.height){
+                    isCBT = true ;
+                }
+            }else if(leftInfo.isCBT && rightInfo.isFull && leftInfo.height == rightInfo.height+1){
+                isCBT = true ;
+            }
+        }
+        return new Info_CBT(isFull,isCBT,height);
+    }
+
+    static class Info_CBT{
+        boolean isFull ;
+        boolean isCBT ;
+        int height ;
+
+        public Info_CBT(boolean isFull, boolean isCBT, int height) {
+            this.isFull = isFull;
+            this.isCBT = isCBT;
+            this.height = height;
+        }
+    }
+
+    /**
+     * 两个节点的最低公共祖先
+     * 非递归实现
+     * @param root
+     * @param a
+     * @param b
+     */
+    public static BinaryTreeNode lowestAncestor(BinaryTreeNode root,BinaryTreeNode a,BinaryTreeNode b){
+        //遍历二叉树
+        Queue<BinaryTreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        Map<BinaryTreeNode,BinaryTreeNode> nodeMap = new HashMap<>();
+        while(queue.isEmpty()){
+            BinaryTreeNode node = queue.poll();
+            if(node.getLeft() != null){
+                queue.add(node.getLeft());
+                nodeMap.put(node.getLeft(),node);
+            }
+            if(node.getRight() != null){
+                queue.add(node.getRight());
+                nodeMap.put(node.getRight(),node);
+            }
+        }
+        //存储a的父节点
+        Set<BinaryTreeNode> aParentSet = new HashSet<>();
+        aParentSet.add(a);
+        BinaryTreeNode node ;
+        BinaryTreeNode node1 = a;
+        while((node = nodeMap.get(node1)) != null){
+            aParentSet.add(node);
+            node1 = node ;
+        }
+        //遍历b的父节点，包含b
+        node1 = b ;
+        while(node1 != null){
+            //如果a的父节点包含了b的父节点，则一定是最低公共祖先
+            if(aParentSet.contains(node1)){
+                return node1 ;
+            }
+            node1 = nodeMap.get(node1);
+        }
+        return null ;
+    }
+
+    /**
+     * 最低公共祖先
+     * 递归实现
+     * @param root
+     * @param a
+     * @param b
+     * @return
+     */
+    public static BinaryTreeNode lowestAncestorRecursive(BinaryTreeNode root,BinaryTreeNode a,BinaryTreeNode b){
+        return process_LowestAncestor(root,a,b).ans;
+    }
+
+    private static Info_LowestAncestor process_LowestAncestor(BinaryTreeNode node,BinaryTreeNode a,BinaryTreeNode b){
+        if(node == null){
+            return new Info_LowestAncestor(null,false,false);
+        }
+
+        Info_LowestAncestor leftInfo = process_LowestAncestor(node.getLeft(),a,b);
+        Info_LowestAncestor rightInfo = process_LowestAncestor(node.getRight(),a,b);
+
+        boolean findA = node == a || leftInfo.findA || rightInfo.findA ;
+        boolean findB = node == b || leftInfo.findB || leftInfo.findB ;
+
+        BinaryTreeNode ans = null ;
+        if(leftInfo.ans != null){
+            ans = leftInfo.ans ;
+        }
+        if(rightInfo.ans != null){
+            ans = rightInfo.ans ;
+        }
+
+        if(ans == null && findA && findB){
+            ans = node ;
+        }
+        return new Info_LowestAncestor(ans,findA,findB);
+    }
+
+    static class Info_LowestAncestor{
+        BinaryTreeNode ans ;
+        boolean findA ;
+        boolean findB ;
+
+        public Info_LowestAncestor(BinaryTreeNode ans, boolean findA, boolean findB) {
+            this.ans = ans;
+            this.findA = findA;
+            this.findB = findB;
         }
     }
 }
