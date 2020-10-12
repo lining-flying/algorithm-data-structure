@@ -65,7 +65,17 @@ public class UnionSet<E> {
         }
     }
 
+    public Map<E, Node<E>> getNodeMap() {
+        return nodeMap;
+    }
 
+    public Map<Node<E>, Node<E>> getParentMap() {
+        return parentMap;
+    }
+
+    public Map<Node<E>, Integer> getSizeMap() {
+        return sizeMap;
+    }
 
     public static class Node<E>{
         private E val ;
