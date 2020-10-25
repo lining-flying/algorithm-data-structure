@@ -1,4 +1,4 @@
-package linklist;
+package datastructure.linklist;
 
 public class ListNodeWithRandom<T> {
 

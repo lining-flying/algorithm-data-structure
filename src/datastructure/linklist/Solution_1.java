@@ -1,8 +1,5 @@
-package linklist;
+package datastructure.linklist;
 
-import org.omg.CORBA.INTERNAL;
-
-import java.nio.charset.CharsetEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
