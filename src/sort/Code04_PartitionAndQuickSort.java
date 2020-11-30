@@ -77,6 +77,7 @@ public class Code04_PartitionAndQuickSort {
     }
 
     private static void process03(int[] arr, int L, int R) {
+        //随机抽一个数字跟R-1位置做交换
         int index = L + (int) (Math.random()*(R-L+1)) ;
         swap(arr,index,R);
         int[] equalArea = netherlandFlag(arr,L,R);

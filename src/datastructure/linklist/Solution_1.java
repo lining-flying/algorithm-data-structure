@@ -2,6 +2,7 @@ package datastructure.linklist;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
 public class Solution_1 {
 
@@ -425,19 +426,54 @@ public class Solution_1 {
     }
 
 
+    /**
+     * 删除有序链表的重复元素 -- 双重循环
+     * 时间复杂度O(n)
+     * 空间复杂度O(1)
+     * @param head
+     * @param <T>
+     * @return
+     */
+    public static <T> ListNode<T> removeDuplicateNode(ListNode<T> head){
+        if(head == null || head.getNext() == null){
+            return head ;
+        }
+
+        ListNode<T> node = head ;
+        ListNode<T> prev = null ;
+
+        while(node.getNext() != null){
+            if(!node.getValue().equals(node.getNext().getValue())){
+                if(prev == null){
+                    head = node ;
+                    prev = head ;
+                }else{
+                    prev.setNext(node);
+                    prev = prev.getNext() ;
+                }
+            }else {
+                while (node.getValue().equals(node.getNext().getValue())) {
+                    node = node.getNext();
+                }
+            }
+            node = node.getNext();
+        }
+        prev.setNext(node);
+        return head ;
+    }
+
 
 
 
     public static void main(String[] args) {
         ListNode<Integer> head = new ListNode<>(1);
         head.setNext(new ListNode<>(2));
-        head.getNext().setNext( new ListNode<>(3));
-        head.getNext().getNext().setNext(new ListNode<>(2));
-        head.getNext().getNext().getNext().setNext(new ListNode<>(5));
+        head.getNext().setNext( new ListNode<>(2));
+        head.getNext().getNext().setNext(new ListNode<>(3));
+        head.getNext().getNext().getNext().setNext(new ListNode<>(3));
+        head.getNext().getNext().getNext().getNext().setNext(new ListNode<>(5));
 
-//        System.out.println("result:"+isPalindrome3(head));
-
-        listPartition(head,3);
+        head = removeDuplicateNode(head);
 
         printf(head);
     }

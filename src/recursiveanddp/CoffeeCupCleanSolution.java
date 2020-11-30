@@ -3,6 +3,7 @@ package recursiveanddp;
 import java.net.BindException;
 
 /**
+ * 基于业务限制的尝试模型
  * 给定一个数组，代表每个人喝完咖啡清洗咖啡杯的时间
  * 只有一台咖啡机，一次也只能清晰一个杯子，时间耗费为a，
  * 咖啡杯也可以自己挥发干净，耗时b， 咖啡杯可以并行挥发
@@ -31,8 +32,8 @@ public class CoffeeCupCleanSolution {
     /**
      * 从index开始的咖啡杯清洗干净的最早完成时间
      * @param drinks
-     * @param a
-     * @param b
+     * @param a 咖啡洗干净的耗时
+     * @param b 咖啡自动挥发干净的耗时
      * @param index
      * @param washline 咖啡机洗完的时间
      * @return
@@ -45,7 +46,7 @@ public class CoffeeCupCleanSolution {
 
         //如果剩余不止一个杯子时
         //情况一：如果index杯子选择咖啡机洗
-        //洗完index杯子的时间
+        //洗完index杯子的时间 = 机器空闲时间和咖啡喝完的时间的最大值+机器洗杯子的耗时
         int wash = Math.max(washline,drinks[index]) + a ;
         //后面所有杯子都清洗干净的最早完成时间
         int next1 = process(drinks,a,b,index+1,wash);
@@ -53,12 +54,14 @@ public class CoffeeCupCleanSolution {
         int p1 = Math.max(wash,next1) ;
 
         //情况二：如果index杯子选择自己挥发
-        //index杯子干净的时间
+        //index杯子干净的时间 = 咖啡喝完的时间 + 自由风干的时间
         int dry = drinks[index] + b ;
-        //洗完后面所有杯子的最早完成时间
+        //洗完后面所有杯子的最早完成时间，此时washline没有更新，因为根本没有用到咖啡机
         int next2 = process(drinks, a, b, index+1, washline);
+        //情况二的最早完成时间
         int p2 = Math.max(dry,next2);
 
+        //最终取的时最早的结果
         return Math.min(p1,p2);
     }
 

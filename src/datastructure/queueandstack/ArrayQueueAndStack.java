@@ -128,8 +128,4 @@ public class ArrayQueueAndStack {
     }
 
 
-    //TODO test
-    public static void main(String[] args) {
-
-    }
 }

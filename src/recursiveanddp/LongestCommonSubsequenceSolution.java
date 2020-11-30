@@ -2,6 +2,8 @@ package recursiveanddp;
 
 /**
  * 最长公共子序列
+ * 子序列： 不一定连续
+ * 子串：一定时连续的
  */
 public class LongestCommonSubsequenceSolution {
 

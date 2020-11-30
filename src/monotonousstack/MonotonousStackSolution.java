@@ -14,7 +14,7 @@ public class MonotonousStackSolution {
      * 获取数组中每个元素左右比其小的最近元素的索引下标
      * 数组元素不重复
      * @param arr
-     * @return i行表示arr第i个元素的信息，0列表时第i个元素左边比其小的最近的下标，1列表示第i个元素右边比其小的最近的下标， -1表示没有比其小的值
+     * @return i行表示arr第i个元素的信息，0列表示第i个元素左边比其小的最近的下标，1列表示第i个元素右边比其小的最近的下标， -1表示没有比其小的值
      */
     public static int[][] getNearLessNoRepeat(int[] arr){
         if(arr == null || arr.length == 0){
@@ -99,5 +99,9 @@ public class MonotonousStackSolution {
         }
 
         return res ;
+    }
+
+    public static void main(String[] args) {
+
     }
 }

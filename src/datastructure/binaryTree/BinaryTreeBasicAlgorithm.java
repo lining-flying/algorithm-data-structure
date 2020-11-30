@@ -212,6 +212,7 @@ public class BinaryTreeBasicAlgorithm {
                 levelMap.put(cur.getRight(),curNodeLevel + 1) ;
                 queue.add(cur.getLeft());
             }
+            //如果是当前层，计数+1
             if(curNodeLevel == curLevel){
                 curLevelNodes ++ ;
             }else{
