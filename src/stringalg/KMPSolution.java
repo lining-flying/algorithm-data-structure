@@ -63,4 +63,11 @@ public class KMPSolution {
         }
         return next ;
     }
+
+    public static void main(String[] args) {
+        String str = "123456789";
+        String target = "34567";
+
+        System.out.println(kmp(str,target));
+    }
 }
