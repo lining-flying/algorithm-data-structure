@@ -63,7 +63,7 @@ public class Code04_PartitionAndQuickSort {
                 swap(arr,index,--more); //交换当前元素和>区的左位置的元素，>区左扩 index不变，因为该位置元素还没有比较
             }
         }
-        return new int[]{less+1,more};
+        return new int[]{less+1,more-1};
     }
 
 
