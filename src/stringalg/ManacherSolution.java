@@ -63,6 +63,78 @@ public class ManacherSolution {
         return manacherString ;
     }
 
+
+
+    public static  int countSubstrings(String s) {
+        if(s == null || s.length() == 0){
+            return 0 ;
+        }
+        //补充分隔符#
+        char[] str = manacherString(s);
+
+        int R = -1 ; //最右侧回文半径的下一个位置，即第一个违规的位置
+        int C = -1 ; //最右侧回文半径的中心
+
+        int[] parr = new int[str.length]; //记录每个位置的回文半径
+
+        int i=0;
+        while(i<str.length){
+            parr[i] = R>i ? Math.min(parr[2*C-i],R-i) : 1 ;
+
+            while(i+parr[i] < str.length && i-parr[i]>-1 ){
+                if(str[i+parr[i]] == str[i-parr[i]]){
+                    parr[i]++ ;
+                }else{
+                    break;
+                }
+            }
+
+            if(i+parr[i]>R){
+                R = i+parr[i] ;
+                C = i ;
+            }
+
+            i++ ;
+        }
+
+        int count = 0 ;
+        for(i=0;i<parr.length;i++){
+            count+= parr[i]/2 ;
+        }
+
+        return count ;
+    }
+
+
+    public static int countSubstrings2(String s) {
+        if(s == null || s.length() == 0){
+            return 0 ;
+        }
+        //补充分隔符#
+        char[] str = manacherString(s);
+
+        int ans = 0;
+        for(int i=0;i<str.length;i++){
+            int j=1 ;
+            int c = 1 ;
+            while(i-j>-1 && i+j<str.length){
+                if(str[i-j] == str[i+j]){
+                    c ++ ;
+                    j++ ;
+                }else{
+                    break ;
+                }
+            }
+            ans += c/2 ;
+        }
+
+        return ans ;
+    }
+
+
+
+
+
     // for test
     public static int right(String s) {
         if (s == null || s.length() == 0) {
@@ -92,7 +164,7 @@ public class ManacherSolution {
     }
 
     public static void main(String[] args) {
-        int possibilities = 5;
+        /*int possibilities = 5;
         int strSize = 20;
         int testTimes = 5000000;
         System.out.println("test begin");
@@ -102,6 +174,9 @@ public class ManacherSolution {
                 System.out.println("Oops!");
             }
         }
-        System.out.println("test finish");
+        System.out.println("test finish");*/
+
+        System.out.println(countSubstrings("aba"));
+        System.out.println(countSubstrings2("aba"));
     }
 }

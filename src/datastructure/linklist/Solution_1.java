@@ -463,19 +463,66 @@ public class Solution_1 {
     }
 
 
+    /**
+     * k个一组翻转链表
+     * @param head
+     * @param k
+     * @return
+     */
+    public static ListNode reverseKGroup(ListNode head,int k){
+        if(k<=1){
+            return head ;
+        }
+
+        ListNode dummy = new ListNode(0);
+        dummy.setNext(head);
+        ListNode pre = dummy;
+        ListNode start = pre.getNext() ;
+        while(true){
+            ListNode end = pre ;
+            //找到要翻转的段的开始和结尾
+            for(int i=0;i<k && end != null;i++){
+                end = end.getNext() ;
+            }
+            if(end == null){
+                break;
+            }
+
+            ListNode nextPre = start ;
+            ListNode nextStart = end.getNext() ;
+
+            pre.setNext(doReverse(start,end));
+
+            pre = nextPre ;
+            start = nextStart ;
+        }
+
+        return dummy.getNext() ;
+    }
+
+    private static ListNode doReverse(ListNode start, ListNode end) {
+        ListNode tail = end.getNext() ;
+        ListNode next = tail ;
+        while(start != tail){
+            ListNode temp = start.getNext() ;
+            start.setNext(next);
+            next = start ;
+            start = temp ;
+        }
+        return end ;
+    }
 
 
     public static void main(String[] args) {
         ListNode<Integer> head = new ListNode<>(1);
         head.setNext(new ListNode<>(2));
-        head.getNext().setNext( new ListNode<>(2));
-        head.getNext().getNext().setNext(new ListNode<>(3));
-        head.getNext().getNext().getNext().setNext(new ListNode<>(3));
-        head.getNext().getNext().getNext().getNext().setNext(new ListNode<>(5));
+        head.getNext().setNext( new ListNode<>(3));
+        head.getNext().getNext().setNext(new ListNode<>(4));
+        head.getNext().getNext().getNext().setNext(new ListNode<>(5));
+        head.getNext().getNext().getNext().getNext().setNext(new ListNode<>(6));
+        head.getNext().getNext().getNext().getNext().getNext().setNext(new ListNode<>(7));
 
-        head = removeDuplicateNode(head);
-
-        printf(head);
+        printf(reverseKGroup(head,3));
     }
 
     private static void printf(ListNode head){
