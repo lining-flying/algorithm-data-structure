@@ -1,6 +1,6 @@
 package leetcode;
 
-public class leetcode_offer_33 {
+public class leetcode_offer_53 {
 
     public static int missingNumber(int[] nums) {
         int left = 0 ;
